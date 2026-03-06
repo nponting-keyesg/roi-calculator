@@ -1265,6 +1265,18 @@ peInputs.forEach(id => document.getElementById(id).addEventListener('input', cal
 coInputs.forEach(id => document.getElementById(id).addEventListener('input', calcCorp));
 
 calcPE(); calcCorp();
+
+// ── IFRAME AUTO-RESIZE ────────────────────────────────────────
+// Posts the document height to the parent page whenever content changes.
+// The HubSpot landing page listens for this and resizes the iframe.
+function postHeight() {
+  const height = document.documentElement.scrollHeight;
+  window.parent.postMessage({ type: 'calcHeight', height: height }, '*');
+}
+// Post on load, and observe any DOM size changes
+postHeight();
+const resizeObserver = new ResizeObserver(() => postHeight());
+resizeObserver.observe(document.body);
 </script>
 </body>
 </html>
