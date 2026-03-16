@@ -305,6 +305,21 @@
   .gate-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
   .gate-sub strong { color: var(--navy); }
   .mock-form { text-align: left; }
+  .native-form { text-align: left; }
+
+  /* Checkbox field */
+  .f-checkbox { margin-top: 4px; }
+  .checkbox-label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text-mid); line-height: 1.4; font-weight: 500; }
+  .checkbox-label input[type="checkbox"] { margin-top: 2px; width: 16px; height: 16px; accent-color: var(--green); flex-shrink: 0; cursor: pointer; }
+
+  /* Error message */
+  .form-error { font-size: 12px; color: var(--red); margin-top: 8px; font-weight: 500; }
+
+  /* Thank-you state */
+  .thankyou-msg { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 16px 0 8px; }
+  .thankyou-icon { width: 52px; height: 52px; background: var(--green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .thankyou-msg h4 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 17px; color: var(--navy); margin-bottom: 8px; }
+  .thankyou-msg p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
   .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
   .f-row.full { grid-template-columns: 1fr; }
   .f-field { display: flex; flex-direction: column; gap: 4px; }
@@ -710,7 +725,37 @@
           </div>
           <h3>Your results are calculated</h3>
           <p class="gate-sub">Enter your details to unlock the full breakdown — year-by-year cost comparison, fund + portco hours saved, and ROI vs all three alternatives.</p>
-          <div id="hs-form-mount"></div>
+          <div id="hs-form-mount">
+            <div class="native-form" id="pe-native-form">
+              <div class="f-row">
+                <div class="f-field"><label>First name *</label><input type="text" id="pe-firstname" placeholder="Jane" required></div>
+                <div class="f-field"><label>Last name *</label><input type="text" id="pe-lastname" placeholder="Smith" required></div>
+              </div>
+              <div class="f-row full"><div class="f-field"><label>Work email *</label><input type="email" id="pe-email" placeholder="jane@fund.com" required></div></div>
+              <div class="f-row full"><div class="f-field"><label>Company name *</label><input type="text" id="pe-company" placeholder="Acme Capital" required></div></div>
+              <div class="f-row">
+                <div class="f-field"><label>Job title *</label><input type="text" id="pe-jobtitle" placeholder="Head of ESG" required></div>
+                <div class="f-field"><label>Phone</label><input type="tel" id="pe-phone" placeholder="+44 7700 900000"></div>
+              </div>
+              <div class="f-row full">
+                <div class="f-field f-checkbox">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="pe-demo">
+                    <span>Please contact me to book a demo of the KEY ESG platform</span>
+                  </label>
+                </div>
+              </div>
+              <div id="pe-form-error" class="form-error" style="display:none;">Please fill in all required fields.</div>
+              <button class="gate-submit" onclick="submitForm('pe', event)">Unlock my full report →</button>
+            </div>
+            <div id="pe-thankyou" class="thankyou-msg" style="display:none;">
+              <div class="thankyou-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#23C983" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <h4>Thank you — your report is unlocked</h4>
+              <p>We've received your details. A member of the KEY ESG team will be in touch shortly.</p>
+            </div>
+          </div>
           <p class="gate-privacy">By submitting you agree to KEY ESG's <a href="https://www.keyesg.com/privacy-policy" target="_blank">privacy policy</a>. We won't spam you.</p>
         </div>
       </div>
@@ -898,7 +943,37 @@
           </div>
           <h3>Your results are calculated</h3>
           <p class="gate-sub">Enter your details to unlock the full breakdown — year-by-year costs, hours saved, and your full ROI metrics.</p>
-          <div id="co-hs-form-mount"></div>
+          <div id="co-hs-form-mount">
+            <div class="native-form" id="co-native-form">
+              <div class="f-row">
+                <div class="f-field"><label>First name *</label><input type="text" id="co-firstname" placeholder="Jane" required></div>
+                <div class="f-field"><label>Last name *</label><input type="text" id="co-lastname" placeholder="Smith" required></div>
+              </div>
+              <div class="f-row full"><div class="f-field"><label>Work email *</label><input type="email" id="co-email" placeholder="jane@company.com" required></div></div>
+              <div class="f-row full"><div class="f-field"><label>Company name *</label><input type="text" id="co-company" placeholder="Acme Ltd" required></div></div>
+              <div class="f-row">
+                <div class="f-field"><label>Job title *</label><input type="text" id="co-jobtitle" placeholder="Head of Sustainability" required></div>
+                <div class="f-field"><label>Phone</label><input type="tel" id="co-phone" placeholder="+44 7700 900000"></div>
+              </div>
+              <div class="f-row full">
+                <div class="f-field f-checkbox">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="co-demo">
+                    <span>Please contact me to book a demo of the KEY ESG platform</span>
+                  </label>
+                </div>
+              </div>
+              <div id="co-form-error" class="form-error" style="display:none;">Please fill in all required fields.</div>
+              <button class="gate-submit" onclick="submitForm('co', event)">Unlock my full report →</button>
+            </div>
+            <div id="co-thankyou" class="thankyou-msg" style="display:none;">
+              <div class="thankyou-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#23C983" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <h4>Thank you — your report is unlocked</h4>
+              <p>We've received your details. A member of the KEY ESG team will be in touch shortly.</p>
+            </div>
+          </div>
           <p class="gate-privacy">By submitting you agree to KEY ESG's <a href="https://www.keyesg.com/privacy-policy" target="_blank">privacy policy</a>. We won't spam you.</p>
         </div>
       </div>
@@ -1216,35 +1291,84 @@ function scrollToGate() {
   document.getElementById(anchorId).scrollIntoView({ behavior:'smooth', block:'center' });
 }
 
-// ── HubSpot forms ─────────────────────────────────────────────
-// Load the HubSpot forms script once, then initialise both forms
-var hsScript = document.createElement('script');
-hsScript.src = '//js-eu1.hsforms.net/forms/embed/v2.js';
-hsScript.charset = 'utf-8';
-hsScript.type = 'text/javascript';
-hsScript.onload = function() {
-  // PE form
-  hbspt.forms.create({
-    region: 'eu1',
-    portalId: '25631997',
-    formId: 'e0f10d27-abd9-40a7-8110-616623dc542c',
-    target: '#hs-form-mount',
-    onFormSubmitted: function() {
-      unlockResults('results-zone', 'gate-overlay');
+// ── HubSpot Forms API direct submission ───────────────────────
+// Submits directly to HubSpot's Forms API — no SDK, no reCAPTCHA.
+const HS_PORTAL  = '25631997';
+const HS_FORM_PE = 'e0f10d27-abd9-40a7-8110-616623dc542c';
+const HS_FORM_CO = 'e464ff19-c410-4b6b-94f9-9a7c7bcce03f';
+
+async function submitForm(type, e) {
+  e.preventDefault();
+
+  const isPE     = type === 'pe';
+  const prefix   = isPE ? 'pe' : 'co';
+  const formId   = isPE ? HS_FORM_PE : HS_FORM_CO;
+  const zoneId   = isPE ? 'results-zone'    : 'co-results-zone';
+  const overlayId= isPE ? 'gate-overlay'    : 'co-gate-overlay';
+  const nativeId = isPE ? 'pe-native-form'  : 'co-native-form';
+  const thankId  = isPE ? 'pe-thankyou'     : 'co-thankyou';
+  const errorId  = isPE ? 'pe-form-error'   : 'co-form-error';
+
+  // Validate required fields
+  const required = [`${prefix}-firstname`, `${prefix}-lastname`, `${prefix}-email`, `${prefix}-company`, `${prefix}-jobtitle`];
+  const missing  = required.filter(id => !document.getElementById(id).value.trim());
+  if (missing.length) {
+    missing.forEach(id => document.getElementById(id).classList.add('error'));
+    document.getElementById(errorId).style.display = 'block';
+    return;
+  }
+  // Clear errors
+  required.forEach(id => document.getElementById(id).classList.remove('error'));
+  document.getElementById(errorId).style.display = 'none';
+
+  // Disable button while submitting
+  const btn = document.querySelector(`#${nativeId} .gate-submit`);
+  btn.textContent = 'Submitting…';
+  btn.disabled = true;
+
+  const fields = [
+    { name: 'firstname',  value: document.getElementById(`${prefix}-firstname`).value.trim() },
+    { name: 'lastname',   value: document.getElementById(`${prefix}-lastname`).value.trim() },
+    { name: 'email',      value: document.getElementById(`${prefix}-email`).value.trim() },
+    { name: 'company',    value: document.getElementById(`${prefix}-company`).value.trim() },
+    { name: 'jobtitle',   value: document.getElementById(`${prefix}-jobtitle`).value.trim() },
+    { name: 'phone',      value: document.getElementById(`${prefix}-phone`).value.trim() },
+    { name: 'request_a_demo', value: document.getElementById(`${prefix}-demo`).checked ? 'true' : 'false' },
+    { name: 'calculator_type', value: isPE ? 'Private Equity' : 'Corporate' },
+  ];
+
+  try {
+    const res = await fetch(
+      `https://api.hsforms.com/submissions/v3/integration/submit/${HS_PORTAL}/${formId}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fields,
+          context: { pageUri: window.location.href, pageName: document.title }
+        })
+      }
+    );
+
+    if (res.ok || res.status === 200) {
+      // Show thank-you, hide form
+      document.getElementById(nativeId).style.display = 'none';
+      document.getElementById(thankId).style.display  = 'flex';
+      // Unlock results
+      unlockResults(zoneId, overlayId);
+    } else {
+      btn.textContent = 'Unlock my full report →';
+      btn.disabled = false;
+      document.getElementById(errorId).textContent = 'Something went wrong — please try again.';
+      document.getElementById(errorId).style.display = 'block';
     }
-  });
-  // Corporate form
-  hbspt.forms.create({
-    region: 'eu1',
-    portalId: '25631997',
-    formId: 'e464ff19-c410-4b6b-94f9-9a7c7bcce03f',
-    target: '#co-hs-form-mount',
-    onFormSubmitted: function() {
-      unlockResults('co-results-zone', 'co-gate-overlay');
-    }
-  });
-};
-document.head.appendChild(hsScript);
+  } catch(err) {
+    btn.textContent = 'Unlock my full report →';
+    btn.disabled = false;
+    document.getElementById(errorId).textContent = 'Connection error — please check your internet and try again.';
+    document.getElementById(errorId).style.display = 'block';
+  }
+}
 
 // ── TOGGLE ASSUMPTIONS ────────────────────────────────────────
 function togglePEAssumptions() {
