@@ -1326,43 +1326,52 @@ async function submitForm(type, e) {
   btn.textContent = 'Submitting…';
   btn.disabled = true;
 
+  // Only include fields with values — HubSpot rejects unknown field names
   const fields = [
-    { name: 'firstname',  value: document.getElementById(`${prefix}-firstname`).value.trim() },
-    { name: 'lastname',   value: document.getElementById(`${prefix}-lastname`).value.trim() },
-    { name: 'email',      value: document.getElementById(`${prefix}-email`).value.trim() },
-    { name: 'company',    value: document.getElementById(`${prefix}-company`).value.trim() },
-    { name: 'jobtitle',   value: document.getElementById(`${prefix}-jobtitle`).value.trim() },
-    { name: 'phone',      value: document.getElementById(`${prefix}-phone`).value.trim() },
-    { name: 'request_a_demo', value: document.getElementById(`${prefix}-demo`).checked ? 'true' : 'false' },
-    { name: 'calculator_type', value: isPE ? 'Private Equity' : 'Corporate' },
-  ];
+    { name: 'firstname', value: document.getElementById(`${prefix}-firstname`).value.trim() },
+    { name: 'lastname',  value: document.getElementById(`${prefix}-lastname`).value.trim() },
+    { name: 'email',     value: document.getElementById(`${prefix}-email`).value.trim() },
+    { name: 'company',   value: document.getElementById(`${prefix}-company`).value.trim() },
+    { name: 'jobtitle',  value: document.getElementById(`${prefix}-jobtitle`).value.trim() },
+    { name: 'phone',     value: document.getElementById(`${prefix}-phone`).value.trim() },
+  ].filter(f => f.value !== '');
+
+  const wantsDemo = document.getElementById(`${prefix}-demo`).checked;
+
+  const payload = JSON.stringify({
+    fields,
+    context: { pageUri: window.location.href, pageName: document.title },
+    legalConsentOptions: {
+      consent: {
+        consentToProcess: true,
+        text: 'I agree to allow KEY ESG to store and process my personal data.',
+        communications: [
+          {
+            value: wantsDemo,
+            subscriptionTypeId: 133595017,
+            text: 'Please contact me to book a demo of the KEY ESG platform.'
+          }
+        ]
+      }
+    }
+  });
 
   try {
-    const res = await fetch(
+    // no-cors mode: HubSpot Forms v3 supports cross-origin submissions.
+    // We cannot read the response body in no-cors mode so we treat any
+    // completed fetch (no network error) as a success.
+    await fetch(
       `https://api.hsforms.com/submissions/v3/integration/submit/${HS_PORTAL}/${formId}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fields,
-          context: { pageUri: window.location.href, pageName: document.title }
-        })
-      }
+      { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: payload }
     );
 
-    if (res.ok || res.status === 200) {
-      // Show thank-you, hide form
-      document.getElementById(nativeId).style.display = 'none';
-      document.getElementById(thankId).style.display  = 'flex';
-      // Unlock results
-      unlockResults(zoneId, overlayId);
-    } else {
-      btn.textContent = 'Unlock my full report →';
-      btn.disabled = false;
-      document.getElementById(errorId).textContent = 'Something went wrong — please try again.';
-      document.getElementById(errorId).style.display = 'block';
-    }
+    // Show thank-you and unlock results
+    document.getElementById(nativeId).style.display = 'none';
+    document.getElementById(thankId).style.display  = 'flex';
+    unlockResults(zoneId, overlayId);
+
   } catch(err) {
+    // Only fires on a true network failure (offline, DNS error, etc.)
     btn.textContent = 'Unlock my full report →';
     btn.disabled = false;
     document.getElementById(errorId).textContent = 'Connection error — please check your internet and try again.';
