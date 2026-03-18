@@ -1357,22 +1357,32 @@ async function submitForm(type, e) {
   });
 
   try {
-    // Send as a Blob so we can set Content-Type without triggering a CORS preflight.
-    // no-cors mode means we can't read the response, so we treat any completed
-    // fetch (no network error thrown) as a success.
-    const blob = new Blob([payload], { type: 'application/json' });
-    await fetch(
+    // HubSpot Forms v3 supports CORS — send as a standard JSON POST.
+    const res = await fetch(
       `https://api.hsforms.com/submissions/v3/integration/submit/${HS_PORTAL}/${formId}`,
-      { method: 'POST', mode: 'no-cors', body: blob }
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload
+      }
     );
 
-    // Show thank-you and unlock results
-    document.getElementById(nativeId).style.display = 'none';
-    document.getElementById(thankId).style.display  = 'flex';
-    unlockResults(zoneId, overlayId);
-
+    if (res.ok) {
+      // Success — show thank-you and unlock results
+      document.getElementById(nativeId).style.display = 'none';
+      document.getElementById(thankId).style.display  = 'flex';
+      unlockResults(zoneId, overlayId);
+    } else {
+      // HubSpot returned an error — log it and show message
+      const errBody = await res.text();
+      console.error('HubSpot submission error', res.status, errBody);
+      btn.textContent = 'Unlock my full report →';
+      btn.disabled = false;
+      document.getElementById(errorId).textContent = 'Something went wrong (' + res.status + ') — please try again.';
+      document.getElementById(errorId).style.display = 'block';
+    }
   } catch(err) {
-    // Only fires on a true network failure (offline, DNS error, etc.)
+    console.error('Fetch error:', err);
     btn.textContent = 'Unlock my full report →';
     btn.disabled = false;
     document.getElementById(errorId).textContent = 'Connection error — please check your internet and try again.';
