@@ -1357,12 +1357,13 @@ async function submitForm(type, e) {
   });
 
   try {
-    // no-cors mode: HubSpot Forms v3 supports cross-origin submissions.
-    // We cannot read the response body in no-cors mode so we treat any
-    // completed fetch (no network error) as a success.
+    // Send as a Blob so we can set Content-Type without triggering a CORS preflight.
+    // no-cors mode means we can't read the response, so we treat any completed
+    // fetch (no network error thrown) as a success.
+    const blob = new Blob([payload], { type: 'application/json' });
     await fetch(
       `https://api.hsforms.com/submissions/v3/integration/submit/${HS_PORTAL}/${formId}`,
-      { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: payload }
+      { method: 'POST', mode: 'no-cors', body: blob }
     );
 
     // Show thank-you and unlock results
