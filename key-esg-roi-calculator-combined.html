@@ -745,24 +745,12 @@
       </div>
     </div>
 
-    <!-- PE subscription inputs -->
-    <div class="card two-col" style="margin-bottom:32px;grid-template-columns:1fr 1fr;">
-      <div class="field">
-        <label>Annual fund-level subscription</label>
-        <div class="input-row"><input type="number" id="pe-sub-fund" value="50000" min="5000" max="500000" step="1000"><div class="unit">€/yr</div></div>
-      </div>
-      <div class="field">
-        <label>Per portfolio company licence (annual)</label>
-        <div class="input-row"><input type="number" id="pe-sub-portco" value="3000" min="500" max="20000" step="500"><div class="unit">€/portco/yr</div></div>
-      </div>
-      <div class="field">
-        <label>Implementation &amp; onboarding (one-off)</label>
-        <div class="input-row"><input type="number" id="pe-impl" value="20000" min="0" max="200000" step="1000"><div class="unit">€</div></div>
-      </div>
-      <div class="field">
-        <label>Training costs — Year 1</label>
-        <div class="input-row"><input type="number" id="pe-train" value="8000" min="0" max="50000" step="500"><div class="unit">€</div></div>
-      </div>
+    <!-- PE subscription inputs — hidden, values set internally -->
+    <div style="display:none;">
+      <input type="number" id="pe-sub-fund" value="50000">
+      <input type="number" id="pe-sub-portco" value="3000">
+      <input type="number" id="pe-impl" value="20000">
+      <input type="number" id="pe-train" value="8000">
     </div>
 
     <!-- PE assumptions — hidden inputs, values set internally -->
@@ -1430,7 +1418,7 @@ async function submitForm(type, e) {
 // ── ASSUMPTIONS are set internally and hidden from users ────
 
 // ── INIT — wire all number inputs ────────────────────────────
-const peInputs = ['pe-portcos','pe-fund-reports','pe-portco-reports','pe-frameworks','pe-ftes','pe-fund-rate','pe-portco-rate','pe-sub-fund','pe-sub-portco','pe-impl','pe-train','pe-penalty'];
+const peInputs = ['pe-portcos','pe-fund-reports','pe-portco-reports','pe-frameworks','pe-ftes','pe-fund-rate','pe-portco-rate'];
 const coInputs = ['co-sites','co-reports','co-frameworks','co-rate','co-ftes','co-sub','co-impl','co-penalty'];
 peInputs.forEach(id => document.getElementById(id).addEventListener('input', calcPE));
 coInputs.forEach(id => document.getElementById(id).addEventListener('input', calcCorp));
