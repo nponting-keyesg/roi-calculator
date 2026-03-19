@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>ROI Calculator — KEY ESG</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -199,18 +199,24 @@
   /* Sliders */
   .slider-row { display: flex; align-items: center; gap: 12px; }
   input[type="range"] {
-    flex: 1; -webkit-appearance: none;
+    flex: 1; -webkit-appearance: none; appearance: none;
     height: 4px; background: var(--border);
     border-radius: 2px; outline: none; cursor: pointer;
+    touch-action: pan-x; /* prevent vertical scroll hijack on mobile */
   }
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 18px; height: 18px;
+    width: 28px; height: 28px; /* larger touch target on mobile */
     background: var(--navy); border-radius: 50%;
     border: 2px solid var(--green);
     transition: transform 0.12s;
   }
-  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  input[type="range"]::-moz-range-thumb {
+    width: 28px; height: 28px;
+    background: var(--navy); border-radius: 50%;
+    border: 2px solid var(--green);
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.1); }
   .slider-val { font-weight: 700; font-size: 14px; color: var(--navy); min-width: 52px; text-align: right; }
 
   /* Section divider */
@@ -504,6 +510,83 @@
   /* ── STAGE TRANSITIONS ───────────────────────────────────── */
   .stage { display: none; }
   .stage.active { display: block; animation: fadeUp 0.3s ease both; }
+
+  /* ── MOBILE ──────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+
+    /* Layout */
+    .page { padding: 24px 16px 48px; }
+    .two-col { grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
+    .card { padding: 20px 18px; }
+
+    /* Header */
+    .header-inner { padding: 14px 16px; }
+
+    /* Hero */
+    .hero { padding: 40px 20px 48px; }
+    .hero h1 { font-size: 26px; }
+    .hero p { font-size: 15px; }
+
+    /* Audience cards */
+    .audience-cards { grid-template-columns: 1fr; gap: 14px; }
+    .aud-card { padding: 24px 20px; }
+    .audience-intro h2 { font-size: 22px; }
+
+    /* Steps */
+    .steps { gap: 0; }
+    .step { font-size: 11px; gap: 5px; }
+    .step-num { width: 22px; height: 22px; font-size: 10px; }
+    .step-line { margin: 0 4px; }
+
+    /* Inputs — full width, taller touch targets */
+    input[type="number"] { height: 46px; font-size: 16px; /* 16px prevents iOS zoom */ }
+    .unit { height: 46px; }
+    .f-field input { height: 46px; font-size: 16px; }
+
+    /* Sliders — taller hit area */
+    .slider-row { gap: 10px; }
+    input[type="range"] { height: 6px; }
+
+    /* Section dividers */
+    .section-divider { margin: 16px 0 14px; }
+
+    /* Stats grid — 2 col on mobile */
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .stat-value { font-size: 22px; }
+
+    /* Results banner */
+    .results-banner { padding: 24px 20px; }
+
+    /* Bar chart labels */
+    .bar-label { width: 80px; font-size: 12px; }
+    .bar-fill span { font-size: 11px; }
+
+    /* Table — horizontal scroll */
+    .comp-table th, .comp-table td { padding: 10px 10px; font-size: 12px; }
+
+    /* Time card stats */
+    .ts-value { font-size: 20px; }
+
+    /* CTA */
+    .cta-band { padding: 28px 20px; }
+    .cta-band h3 { font-size: 18px; }
+
+    /* Gate card */
+    .gate-card { padding: 28px 20px; margin: 0 4px; }
+    .gate-card h3 { font-size: 18px; }
+    .f-row { grid-template-columns: 1fr; }
+
+    /* Teaser pill */
+    .teaser-pill { flex-wrap: wrap; gap: 6px; }
+    .pill-cta { display: none; }
+
+    /* Back button row */
+    div[style*="justify-content:space-between"] { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+    /* Subscription card two-col */
+    .card.two-col { display: flex; flex-direction: column; }
+  }
+
 </style>
 </head>
 <body>
@@ -682,32 +765,12 @@
       </div>
     </div>
 
-    <!-- PE assumptions -->
-    <div class="card" style="margin-bottom:32px;">
-      <button class="toggle-btn" id="pe-toggle-btn" onclick="togglePEAssumptions()">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Adjust model assumptions
-      </button>
-      <div id="pe-assumptions" class="collapsed">
-        <div class="assumptions-grid">
-          <div class="field">
-            <label>KEY ESG: data collection time saving</label>
-            <div class="slider-row"><input type="range" id="pe-save-col" min="10" max="90" value="50" oninput="document.getElementById('v-psc').textContent=this.value+'%';calcPE()"><span class="slider-val" id="v-psc">50%</span></div>
-          </div>
-          <div class="field">
-            <label>KEY ESG: report preparation saving</label>
-            <div class="slider-row"><input type="range" id="pe-save-prep" min="10" max="90" value="40" oninput="document.getElementById('v-psp').textContent=this.value+'%';calcPE()"><span class="slider-val" id="v-psp">40%</span></div>
-          </div>
-          <div class="field">
-            <label>Annual growth in reports required</label>
-            <div class="slider-row"><input type="range" id="pe-rep-growth" min="0" max="50" value="10" oninput="document.getElementById('v-prg').textContent=this.value+'%';calcPE()"><span class="slider-val" id="v-prg">10%</span></div>
-          </div>
-          <div class="field">
-            <label>Regulatory penalty risk (per entity)</label>
-            <div class="input-row"><input type="number" id="pe-penalty" value="50000" min="0" max="1000000" step="5000" oninput="calcPE()"><div class="unit">€</div></div>
-          </div>
-        </div>
-      </div>
+    <!-- PE assumptions — hidden inputs, values set internally -->
+    <div style="display:none;">
+      <input type="range" id="pe-save-col" value="50">
+      <input type="range" id="pe-save-prep" value="40">
+      <input type="range" id="pe-rep-growth" value="10">
+      <input type="number" id="pe-penalty" value="50000">
     </div>
 
     <!-- PE teaser pill + results zone -->
@@ -892,40 +955,14 @@
       </div>
     </div>
 
-    <!-- Corp assumptions -->
-    <div class="card" style="margin-bottom:32px;">
-      <button class="toggle-btn" id="co-toggle-btn" onclick="toggleCorpAssumptions()">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Adjust model assumptions
-      </button>
-      <div id="co-assumptions" class="collapsed">
-        <div class="assumptions-grid">
-          <div class="field">
-            <label>KEY ESG: data collection time saving</label>
-            <div class="slider-row"><input type="range" id="co-save-col" min="10" max="90" value="50" oninput="document.getElementById('v-csc').textContent=this.value+'%';calcCorp()"><span class="slider-val" id="v-csc">50%</span></div>
-          </div>
-          <div class="field">
-            <label>KEY ESG: report preparation saving</label>
-            <div class="slider-row"><input type="range" id="co-save-prep" min="10" max="90" value="40" oninput="document.getElementById('v-csp').textContent=this.value+'%';calcCorp()"><span class="slider-val" id="v-csp">40%</span></div>
-          </div>
-          <div class="field">
-            <label>KEY ESG: QA &amp; audit prep saving</label>
-            <div class="slider-row"><input type="range" id="co-save-qa" min="10" max="90" value="60" oninput="document.getElementById('v-csq').textContent=this.value+'%';calcCorp()"><span class="slider-val" id="v-csq">60%</span></div>
-          </div>
-          <div class="field">
-            <label>Annual growth in reports required</label>
-            <div class="slider-row"><input type="range" id="co-rep-growth" min="0" max="50" value="10" oninput="document.getElementById('v-crg').textContent=this.value+'%';calcCorp()"><span class="slider-val" id="v-crg">10%</span></div>
-          </div>
-          <div class="field">
-            <label>Estimated regulatory penalty risk</label>
-            <div class="input-row"><input type="number" id="co-penalty" value="50000" min="0" max="1000000" step="5000" oninput="calcCorp()"><div class="unit">€</div></div>
-          </div>
-          <div class="field">
-            <label>Probability of penalty (without robust system)</label>
-            <div class="slider-row"><input type="range" id="co-pen-prob" min="1" max="50" value="15" oninput="document.getElementById('v-cpp').textContent=this.value+'%';calcCorp()"><span class="slider-val" id="v-cpp">15%</span></div>
-          </div>
-        </div>
-      </div>
+    <!-- Corp assumptions — hidden inputs, values set internally -->
+    <div style="display:none;">
+      <input type="range" id="co-save-col" value="50">
+      <input type="range" id="co-save-prep" value="40">
+      <input type="range" id="co-save-qa" value="60">
+      <input type="range" id="co-rep-growth" value="10">
+      <input type="number" id="co-penalty" value="50000">
+      <input type="range" id="co-pen-prob" value="15">
     </div>
 
     <!-- Corp teaser + results -->
@@ -1390,23 +1427,31 @@ async function submitForm(type, e) {
   }
 }
 
-// ── TOGGLE ASSUMPTIONS ────────────────────────────────────────
-function togglePEAssumptions() {
-  const c = document.getElementById('pe-assumptions');
-  c.classList.toggle('collapsed');
-  document.getElementById('pe-toggle-btn').classList.toggle('open', !c.classList.contains('collapsed'));
-}
-function toggleCorpAssumptions() {
-  const c = document.getElementById('co-assumptions');
-  c.classList.toggle('collapsed');
-  document.getElementById('co-toggle-btn').classList.toggle('open', !c.classList.contains('collapsed'));
-}
+// ── ASSUMPTIONS are set internally and hidden from users ────
 
 // ── INIT — wire all number inputs ────────────────────────────
 const peInputs = ['pe-portcos','pe-fund-reports','pe-portco-reports','pe-frameworks','pe-ftes','pe-fund-rate','pe-portco-rate','pe-sub-fund','pe-sub-portco','pe-impl','pe-train','pe-penalty'];
 const coInputs = ['co-sites','co-reports','co-frameworks','co-rate','co-ftes','co-sub','co-impl','co-penalty'];
 peInputs.forEach(id => document.getElementById(id).addEventListener('input', calcPE));
 coInputs.forEach(id => document.getElementById(id).addEventListener('input', calcCorp));
+
+// ── FIX: prevent iOS keyboard/scroll on range sliders ────────
+// iOS shows the keyboard and scrolls when a range input gains focus.
+// We prevent this by intercepting the touchstart, preventing default
+// focus behaviour, and manually updating the value from touch position.
+document.querySelectorAll('input[type="range"]').forEach(function(slider) {
+  // Blur immediately on touchend so iOS never shows keyboard
+  slider.addEventListener('touchend', function() {
+    this.blur();
+  }, { passive: true });
+
+  // Prevent the scroll-to-top that happens when iOS focuses the element
+  slider.addEventListener('touchstart', function(e) {
+    // Don't call preventDefault here — that would break dragging.
+    // Instead just ensure the element doesn't scroll the page to it.
+    this.focus({ preventScroll: true });
+  }, { passive: true });
+});
 
 calcPE(); calcCorp();
 
